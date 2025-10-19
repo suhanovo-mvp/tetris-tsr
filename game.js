@@ -293,11 +293,13 @@ class TetrisGame {
                 return;
             }
             
-            // Show falling piece info
-            this.showFallingPieceInfo();
-            
             this.generateNextPiece();
             this.drawNextPiece();
+            
+            // Show falling piece info after a short delay to avoid flickering
+            setTimeout(() => {
+                this.showFallingPieceInfo();
+            }, 100);
         }
     }
     
@@ -385,7 +387,7 @@ class TetrisGame {
         // Mark TSR as learned when used in game
         this.markTSRAsLearned(this.currentPiece.tsr);
         
-        // Hide falling piece info
+        // Hide falling piece info before spawning new piece
         this.hideFallingPieceInfo();
         
         this.clearLines();
@@ -930,24 +932,39 @@ class TetrisGame {
         const tsrData = TSR_DATA[this.currentPiece.tsr];
         if (!tsrData) return;
         
+        const infoPanel = document.getElementById('fallingPieceInfo');
+        
         // Update UI elements
         document.getElementById('fallingIcon').textContent = tsrData.icon;
         document.getElementById('fallingCode').textContent = this.currentPiece.tsr;
         document.getElementById('fallingName').textContent = tsrData.name;
         document.getElementById('fallingDescription').textContent = tsrData.description;
         
-        // Show the info panel
-        const infoPanel = document.getElementById('fallingPieceInfo');
+        // Show the info panel with smooth transition
         infoPanel.style.display = 'block';
+        infoPanel.style.opacity = '0';
+        infoPanel.style.transform = 'translateY(-10px)';
         
-        // Add pulsing animation to draw attention
-        infoPanel.style.animation = 'slideInFromTop 0.5s ease-out, pulse 2s infinite';
+        // Animate in
+        requestAnimationFrame(() => {
+            infoPanel.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            infoPanel.style.opacity = '1';
+            infoPanel.style.transform = 'translateY(0)';
+        });
     }
     
     hideFallingPieceInfo() {
         const infoPanel = document.getElementById('fallingPieceInfo');
-        infoPanel.style.display = 'none';
-        infoPanel.style.animation = 'slideInFromTop 0.5s ease-out';
+        
+        // Animate out
+        infoPanel.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        infoPanel.style.opacity = '0';
+        infoPanel.style.transform = 'translateY(-10px)';
+        
+        // Hide after animation
+        setTimeout(() => {
+            infoPanel.style.display = 'none';
+        }, 300);
     }
 }
 

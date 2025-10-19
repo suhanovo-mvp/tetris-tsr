@@ -148,7 +148,8 @@ body {
     border-radius: 15px;
     padding: 20px;
     color: white;
-    animation: slideInFromTop 0.5s ease-out;
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .falling-piece-info h3 {
