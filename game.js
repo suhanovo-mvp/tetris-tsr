@@ -282,6 +282,9 @@ class TetrisGame {
     
     spawnPiece() {
         if (this.nextPiece) {
+            // Hide previous falling piece info if it exists
+            this.hideFallingPieceInfo();
+            
             this.currentPiece = { ...this.nextPiece };
             this.currentPiece.x = Math.floor(this.BOARD_WIDTH / 2) - Math.floor(this.currentPiece.shape[0].length / 2);
             this.currentPiece.y = 0;
@@ -296,10 +299,10 @@ class TetrisGame {
             this.generateNextPiece();
             this.drawNextPiece();
             
-            // Show falling piece info after a short delay to avoid flickering
+            // Show falling piece info for the new piece
             setTimeout(() => {
                 this.showFallingPieceInfo();
-            }, 100);
+            }, 150);
         }
     }
     
@@ -386,9 +389,6 @@ class TetrisGame {
         
         // Mark TSR as learned when used in game
         this.markTSRAsLearned(this.currentPiece.tsr);
-        
-        // Hide falling piece info before spawning new piece
-        this.hideFallingPieceInfo();
         
         this.clearLines();
         this.spawnPiece();
@@ -944,6 +944,7 @@ class TetrisGame {
         infoPanel.style.display = 'block';
         infoPanel.style.opacity = '0';
         infoPanel.style.transform = 'translateY(-10px)';
+        infoPanel.style.transition = ''; // Reset any existing transition
         
         // Animate in
         requestAnimationFrame(() => {
@@ -956,15 +957,20 @@ class TetrisGame {
     hideFallingPieceInfo() {
         const infoPanel = document.getElementById('fallingPieceInfo');
         
+        if (infoPanel.style.display === 'none') {
+            return; // Already hidden
+        }
+        
         // Animate out
-        infoPanel.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        infoPanel.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
         infoPanel.style.opacity = '0';
         infoPanel.style.transform = 'translateY(-10px)';
         
         // Hide after animation
         setTimeout(() => {
             infoPanel.style.display = 'none';
-        }, 300);
+            infoPanel.style.transition = ''; // Reset transition
+        }, 200);
     }
 }
 
