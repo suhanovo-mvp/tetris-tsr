@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тетрис ТСР - Технические средства реабилитации</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        <header class="game-header">
+            <h1>🎮 Тетрис ТСР</h1>
+            <p>Технические средства реабилитации</p>
+        </header>
+        
+        <div class="game-area">
+            <div class="game-board">
+                <canvas id="gameCanvas" width="300" height="600"></canvas>
+                <div class="game-over" id="gameOver">
+                    <h2>Игра окончена!</h2>
+                    <p>Счет: <span id="finalScore">0</span></p>
+                    <button id="restartBtn">Новая игра</button>
+                </div>
+            </div>
+            
+            <div class="game-info">
+                <div class="score-panel">
+                    <h3>Счет</h3>
+                    <div class="score" id="score">0</div>
+                    <div class="level" id="level">Уровень: 1</div>
+                    <div class="lines" id="lines">Линии: 0</div>
+                </div>
+                
+                <div class="next-piece">
+                    <h3>Следующее ТСР</h3>
+                    <canvas id="nextCanvas" width="120" height="120"></canvas>
+                </div>
+                
+                <div class="tsr-info">
+                    <h3>Информация о ТСР</h3>
+                    <div id="tsrDescription">
+                        <p>Выберите техническое средство реабилитации для получения информации</p>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <h3>Управление</h3>
+                    <div class="control-item">
+                        <span class="key">← →</span>
+                        <span>Движение</span>
+                    </div>
+                    <div class="control-item">
+                        <span class="key">↓</span>
+                        <span>Ускорение</span>
+                    </div>
+                    <div class="control-item">
+                        <span class="key">↑</span>
+                        <span>Поворот</span>
+                    </div>
+                    <div class="control-item">
+                        <span class="key">Пробел</span>
+                        <span>Быстрое падение</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tsr-catalog">
+            <h3>Каталог ТСР</h3>
+            <div class="tsr-grid" id="tsrGrid">
+                <!-- ТСР будут добавлены динамически -->
+            </div>
+        </div>
+    </div>
+    
+    <script src="tsr-data.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
