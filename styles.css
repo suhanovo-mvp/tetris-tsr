@@ -140,6 +140,93 @@ body {
     background: #f8f9fa;
 }
 
+/* Falling Piece Info */
+.falling-piece-info {
+    margin-bottom: 30px;
+    text-align: center;
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    border-radius: 15px;
+    padding: 20px;
+    color: white;
+    animation: slideInFromTop 0.5s ease-out;
+}
+
+.falling-piece-info h3 {
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    color: white;
+}
+
+.tsr-info-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.tsr-icon-large {
+    font-size: 3rem;
+    flex-shrink: 0;
+}
+
+.tsr-details {
+    text-align: left;
+    flex: 1;
+}
+
+.tsr-code-large {
+    font-family: monospace;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 4px 8px;
+    border-radius: 6px;
+    display: inline-block;
+}
+
+.tsr-name-large {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.tsr-description-large {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    line-height: 1.4;
+}
+
+@keyframes slideInFromTop {
+    0% {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
+    }
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 10px rgba(76, 175, 80, 0.1);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+    }
+}
+
 .tsr-info {
     margin-bottom: 30px;
 }
@@ -773,5 +860,31 @@ body {
     
     .mobile-only {
         display: block;
+    }
+    
+    .tsr-info-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .tsr-details {
+        text-align: center;
+    }
+    
+    .tsr-icon-large {
+        font-size: 2.5rem;
+    }
+    
+    .tsr-code-large {
+        font-size: 1rem;
+    }
+    
+    .tsr-name-large {
+        font-size: 1rem;
+    }
+    
+    .tsr-description-large {
+        font-size: 0.8rem;
     }
 }

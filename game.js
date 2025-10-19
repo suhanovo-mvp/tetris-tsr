@@ -293,6 +293,9 @@ class TetrisGame {
                 return;
             }
             
+            // Show falling piece info
+            this.showFallingPieceInfo();
+            
             this.generateNextPiece();
             this.drawNextPiece();
         }
@@ -381,6 +384,9 @@ class TetrisGame {
         
         // Mark TSR as learned when used in game
         this.markTSRAsLearned(this.currentPiece.tsr);
+        
+        // Hide falling piece info
+        this.hideFallingPieceInfo();
         
         this.clearLines();
         this.spawnPiece();
@@ -676,6 +682,7 @@ class TetrisGame {
         this.updateScore();
         
         document.getElementById('gameOver').style.display = 'none';
+        this.hideFallingPieceInfo();
     }
     
     gameLoop() {
@@ -914,6 +921,33 @@ class TetrisGame {
         } else if (tabName === 'memory' && !this.currentMemoryTSR) {
             this.startMemoryGame();
         }
+    }
+    
+    // Falling piece info methods
+    showFallingPieceInfo() {
+        if (!this.currentPiece) return;
+        
+        const tsrData = TSR_DATA[this.currentPiece.tsr];
+        if (!tsrData) return;
+        
+        // Update UI elements
+        document.getElementById('fallingIcon').textContent = tsrData.icon;
+        document.getElementById('fallingCode').textContent = this.currentPiece.tsr;
+        document.getElementById('fallingName').textContent = tsrData.name;
+        document.getElementById('fallingDescription').textContent = tsrData.description;
+        
+        // Show the info panel
+        const infoPanel = document.getElementById('fallingPieceInfo');
+        infoPanel.style.display = 'block';
+        
+        // Add pulsing animation to draw attention
+        infoPanel.style.animation = 'slideInFromTop 0.5s ease-out, pulse 2s infinite';
+    }
+    
+    hideFallingPieceInfo() {
+        const infoPanel = document.getElementById('fallingPieceInfo');
+        infoPanel.style.display = 'none';
+        infoPanel.style.animation = 'slideInFromTop 0.5s ease-out';
     }
 }
 
