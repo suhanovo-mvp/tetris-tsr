@@ -56,6 +56,26 @@
                     <div class="lines" id="lines">Линии: 0</div>
                 </div>
                 
+                <div class="learning-panel">
+                    <h3>Изучение ТСР</h3>
+                    <div class="learning-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="learningProgress"></div>
+                        </div>
+                        <div class="progress-text" id="learningText">Изучено: 0/23</div>
+                    </div>
+                    <div class="achievements" id="achievements">
+                        <div class="achievement" id="firstTsr" style="display: none;">
+                            <span class="achievement-icon">🎯</span>
+                            <span class="achievement-text">Первое ТСР</span>
+                        </div>
+                        <div class="achievement" id="categoryMaster" style="display: none;">
+                            <span class="achievement-icon">🏆</span>
+                            <span class="achievement-text">Мастер категории</span>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="next-piece">
                     <h3>Следующее ТСР</h3>
                     <canvas id="nextCanvas" width="120" height="120"></canvas>
@@ -118,8 +138,64 @@
         
         <div class="tsr-catalog">
             <h3>Каталог ТСР</h3>
-            <div class="tsr-grid" id="tsrGrid">
-                <!-- ТСР будут добавлены динамически -->
+            <div class="catalog-tabs">
+                <button class="tab-btn active" id="catalogTab">Каталог</button>
+                <button class="tab-btn" id="quizTab">Викторина</button>
+                <button class="tab-btn" id="memoryTab">Запоминание</button>
+            </div>
+            
+            <div class="tab-content active" id="catalogContent">
+                <div class="tsr-grid" id="tsrGrid">
+                    <!-- ТСР будут добавлены динамически -->
+                </div>
+            </div>
+            
+            <div class="tab-content" id="quizContent">
+                <div class="quiz-container">
+                    <div class="quiz-question" id="quizQuestion">
+                        <h4>Выберите правильный код для ТСР:</h4>
+                        <div class="tsr-preview" id="tsrPreview">
+                            <span class="tsr-icon" id="quizIcon">🦯</span>
+                            <div class="tsr-name" id="quizName">Трость опорная</div>
+                        </div>
+                    </div>
+                    <div class="quiz-options" id="quizOptions">
+                        <!-- Варианты ответов будут добавлены динамически -->
+                    </div>
+                    <div class="quiz-result" id="quizResult" style="display: none;">
+                        <div class="result-text" id="resultText"></div>
+                        <button class="next-question-btn" id="nextQuestionBtn">Следующий вопрос</button>
+                    </div>
+                    <div class="quiz-stats">
+                        <div class="quiz-score">Правильно: <span id="quizCorrect">0</span>/<span id="quizTotal">0</span></div>
+                        <div class="quiz-streak">Серия: <span id="quizStreak">0</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="memoryContent">
+                <div class="memory-game">
+                    <h4>Игра на запоминание кодов</h4>
+                    <div class="memory-instructions">
+                        <p>Запомните код ТСР, затем введите его</p>
+                    </div>
+                    <div class="memory-tsr" id="memoryTsr">
+                        <span class="tsr-icon" id="memoryIcon">🦯</span>
+                        <div class="tsr-name" id="memoryName">Трость опорная</div>
+                        <div class="tsr-description" id="memoryDescription">Описание ТСР</div>
+                    </div>
+                    <div class="memory-input">
+                        <input type="text" id="memoryCodeInput" placeholder="Введите код ТСР" maxlength="10">
+                        <button id="memoryCheckBtn">Проверить</button>
+                    </div>
+                    <div class="memory-result" id="memoryResult" style="display: none;">
+                        <div class="result-text" id="memoryResultText"></div>
+                        <button class="next-memory-btn" id="nextMemoryBtn">Следующее ТСР</button>
+                    </div>
+                    <div class="memory-stats">
+                        <div class="memory-score">Правильно: <span id="memoryCorrect">0</span>/<span id="memoryTotal">0</span></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

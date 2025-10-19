@@ -211,6 +211,102 @@ body {
     display: none;
 }
 
+/* Learning Panel */
+.learning-panel {
+    margin-bottom: 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    padding: 20px;
+    color: white;
+}
+
+.learning-panel h3 {
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    text-align: center;
+}
+
+.learning-progress {
+    margin-bottom: 20px;
+}
+
+.progress-bar {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    height: 20px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-fill {
+    background: linear-gradient(90deg, #4CAF50, #8BC34A);
+    height: 100%;
+    width: 0%;
+    transition: width 0.5s ease;
+    border-radius: 10px;
+}
+
+.progress-text {
+    text-align: center;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.achievements {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.achievement {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    animation: achievementPop 0.5s ease-out;
+}
+
+.achievement-icon {
+    font-size: 1.2rem;
+}
+
+@keyframes achievementPop {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
 .tsr-catalog {
     margin-top: 40px;
     background: white;
@@ -224,6 +320,231 @@ body {
     margin-bottom: 30px;
     font-size: 1.5rem;
     color: #333;
+}
+
+/* Catalog Tabs */
+.catalog-tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #eee;
+}
+
+.tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 12px 16px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #666;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+    color: #4CAF50;
+    border-bottom-color: #4CAF50;
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.tab-btn:hover {
+    background: rgba(76, 175, 80, 0.05);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Quiz Styles */
+.quiz-container {
+    text-align: center;
+}
+
+.quiz-question h4 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.2rem;
+}
+
+.tsr-preview {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 2px solid #e9ecef;
+}
+
+.tsr-preview .tsr-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.tsr-preview .tsr-name {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.quiz-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.quiz-option {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: monospace;
+    font-weight: bold;
+}
+
+.quiz-option:hover {
+    border-color: #4CAF50;
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.quiz-option.correct {
+    background: #4CAF50;
+    color: white;
+    border-color: #45a049;
+}
+
+.quiz-option.incorrect {
+    background: #f44336;
+    color: white;
+    border-color: #d32f2f;
+}
+
+.quiz-result {
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 10px;
+    background: #f8f9fa;
+}
+
+.result-text {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.result-text.correct {
+    color: #4CAF50;
+}
+
+.result-text.incorrect {
+    color: #f44336;
+}
+
+.next-question-btn, .next-memory-btn {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+.next-question-btn:hover, .next-memory-btn:hover {
+    background: #45a049;
+}
+
+.quiz-stats, .memory-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+/* Memory Game Styles */
+.memory-game {
+    text-align: center;
+}
+
+.memory-instructions {
+    margin-bottom: 20px;
+    color: #666;
+}
+
+.memory-tsr {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 2px solid #e9ecef;
+}
+
+.memory-tsr .tsr-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.memory-tsr .tsr-name {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.memory-tsr .tsr-description {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.memory-input {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.memory-input input {
+    padding: 12px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1rem;
+    text-align: center;
+    font-family: monospace;
+    font-weight: bold;
+    width: 150px;
+}
+
+.memory-input input:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+.memory-input button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.memory-input button:hover {
+    background: #45a049;
 }
 
 .tsr-grid {

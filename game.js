@@ -37,6 +37,14 @@ class TetrisGame {
         this.tapThreshold = 200; // Maximum time for tap
         this.swipeThreshold = 50; // Minimum distance for swipe
         
+        // Gamification properties
+        this.learnedTSRs = new Set();
+        this.achievements = new Set();
+        this.quizStats = { correct: 0, total: 0, streak: 0 };
+        this.memoryStats = { correct: 0, total: 0 };
+        this.currentQuizQuestion = null;
+        this.currentMemoryTSR = null;
+        
         this.init();
     }
     
@@ -118,6 +126,9 @@ class TetrisGame {
         document.getElementById('restartBtn').addEventListener('click', () => {
             this.restart();
         });
+        
+        // Gamification event listeners
+        this.setupGamificationEvents();
     }
     
     setupTouchControls() {
@@ -226,6 +237,34 @@ class TetrisGame {
         if (navigator.vibrate) {
             navigator.vibrate(duration);
         }
+    }
+    
+    setupGamificationEvents() {
+        // Tab switching
+        document.getElementById('catalogTab').addEventListener('click', () => this.switchTab('catalog'));
+        document.getElementById('quizTab').addEventListener('click', () => this.switchTab('quiz'));
+        document.getElementById('memoryTab').addEventListener('click', () => this.switchTab('memory'));
+        
+        // Quiz events
+        document.getElementById('nextQuestionBtn').addEventListener('click', () => {
+            this.generateQuizQuestion();
+        });
+        
+        // Memory game events
+        document.getElementById('memoryCheckBtn').addEventListener('click', () => {
+            this.checkMemoryAnswer();
+        });
+        
+        document.getElementById('nextMemoryBtn').addEventListener('click', () => {
+            this.generateMemoryTSR();
+        });
+        
+        // Enter key for memory input
+        document.getElementById('memoryCodeInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.checkMemoryAnswer();
+            }
+        });
     }
     
     generateNextPiece() {
@@ -339,6 +378,9 @@ class TetrisGame {
                 }
             }
         }
+        
+        // Mark TSR as learned when used in game
+        this.markTSRAsLearned(this.currentPiece.tsr);
         
         this.clearLines();
         this.spawnPiece();
@@ -650,6 +692,228 @@ class TetrisGame {
         
         this.draw();
         requestAnimationFrame(() => this.gameLoop());
+    }
+    
+    // Gamification methods
+    markTSRAsLearned(tsrCode) {
+        if (!this.learnedTSRs.has(tsrCode)) {
+            this.learnedTSRs.add(tsrCode);
+            this.updateLearningProgress();
+            this.checkAchievements();
+        }
+    }
+    
+    updateLearningProgress() {
+        const totalTSRs = Object.keys(TSR_DATA).length;
+        const learnedCount = this.learnedTSRs.size;
+        const percentage = (learnedCount / totalTSRs) * 100;
+        
+        document.getElementById('learningProgress').style.width = `${percentage}%`;
+        document.getElementById('learningText').textContent = `Изучено: ${learnedCount}/${totalTSRs}`;
+    }
+    
+    checkAchievements() {
+        const learnedCount = this.learnedTSRs.size;
+        
+        // First TSR achievement
+        if (learnedCount >= 1 && !this.achievements.has('firstTsr')) {
+            this.achievements.add('firstTsr');
+            this.showAchievement('firstTsr', '🎯 Первое ТСР изучено!');
+        }
+        
+        // Category master achievement
+        if (learnedCount >= 10 && !this.achievements.has('categoryMaster')) {
+            this.achievements.add('categoryMaster');
+            this.showAchievement('categoryMaster', '🏆 Мастер категории!');
+        }
+    }
+    
+    showAchievement(achievementId, text) {
+        const achievementElement = document.getElementById(achievementId);
+        if (achievementElement) {
+            achievementElement.style.display = 'flex';
+            achievementElement.querySelector('.achievement-text').textContent = text;
+        }
+        
+        // Show notification
+        this.showNotification(text, 'success');
+    }
+    
+    showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease-in';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+    
+    // Quiz functionality
+    startQuiz() {
+        this.quizStats = { correct: 0, total: 0, streak: 0 };
+        this.generateQuizQuestion();
+    }
+    
+    generateQuizQuestion() {
+        const tsrCodes = Object.keys(TSR_DATA);
+        const correctCode = tsrCodes[Math.floor(Math.random() * tsrCodes.length)];
+        const tsrData = TSR_DATA[correctCode];
+        
+        this.currentQuizQuestion = { correctCode, tsrData };
+        
+        // Update UI
+        document.getElementById('quizIcon').textContent = tsrData.icon;
+        document.getElementById('quizName').textContent = tsrData.name;
+        
+        // Generate options
+        const options = [correctCode];
+        while (options.length < 4) {
+            const randomCode = tsrCodes[Math.floor(Math.random() * tsrCodes.length)];
+            if (!options.includes(randomCode)) {
+                options.push(randomCode);
+            }
+        }
+        
+        // Shuffle options
+        options.sort(() => Math.random() - 0.5);
+        
+        const optionsContainer = document.getElementById('quizOptions');
+        optionsContainer.innerHTML = '';
+        
+        options.forEach(code => {
+            const option = document.createElement('div');
+            option.className = 'quiz-option';
+            option.textContent = code;
+            option.addEventListener('click', () => this.checkQuizAnswer(code));
+            optionsContainer.appendChild(option);
+        });
+        
+        document.getElementById('quizResult').style.display = 'none';
+    }
+    
+    checkQuizAnswer(selectedCode) {
+        const isCorrect = selectedCode === this.currentQuizQuestion.correctCode;
+        this.quizStats.total++;
+        
+        if (isCorrect) {
+            this.quizStats.correct++;
+            this.quizStats.streak++;
+            this.markTSRAsLearned(selectedCode);
+        } else {
+            this.quizStats.streak = 0;
+        }
+        
+        // Update UI
+        const options = document.querySelectorAll('.quiz-option');
+        options.forEach(option => {
+            if (option.textContent === this.currentQuizQuestion.correctCode) {
+                option.classList.add('correct');
+            } else if (option.textContent === selectedCode && !isCorrect) {
+                option.classList.add('incorrect');
+            }
+            option.style.pointerEvents = 'none';
+        });
+        
+        // Show result
+        const resultText = document.getElementById('resultText');
+        resultText.textContent = isCorrect ? 'Правильно! 🎉' : `Неправильно. Правильный ответ: ${this.currentQuizQuestion.correctCode}`;
+        resultText.className = `result-text ${isCorrect ? 'correct' : 'incorrect'}`;
+        
+        document.getElementById('quizResult').style.display = 'block';
+        this.updateQuizStats();
+    }
+    
+    updateQuizStats() {
+        document.getElementById('quizCorrect').textContent = this.quizStats.correct;
+        document.getElementById('quizTotal').textContent = this.quizStats.total;
+        document.getElementById('quizStreak').textContent = this.quizStats.streak;
+    }
+    
+    // Memory game functionality
+    startMemoryGame() {
+        this.memoryStats = { correct: 0, total: 0 };
+        this.generateMemoryTSR();
+    }
+    
+    generateMemoryTSR() {
+        const tsrCodes = Object.keys(TSR_DATA);
+        const randomCode = tsrCodes[Math.floor(Math.random() * tsrCodes.length)];
+        const tsrData = TSR_DATA[randomCode];
+        
+        this.currentMemoryTSR = { code: randomCode, data: tsrData };
+        
+        // Update UI
+        document.getElementById('memoryIcon').textContent = tsrData.icon;
+        document.getElementById('memoryName').textContent = tsrData.name;
+        document.getElementById('memoryDescription').textContent = tsrData.description;
+        
+        document.getElementById('memoryCodeInput').value = '';
+        document.getElementById('memoryResult').style.display = 'none';
+        document.getElementById('memoryCodeInput').focus();
+    }
+    
+    checkMemoryAnswer() {
+        const input = document.getElementById('memoryCodeInput');
+        const userAnswer = input.value.trim().toUpperCase();
+        const correctAnswer = this.currentMemoryTSR.code.toUpperCase();
+        
+        this.memoryStats.total++;
+        
+        const isCorrect = userAnswer === correctAnswer;
+        if (isCorrect) {
+            this.memoryStats.correct++;
+            this.markTSRAsLearned(this.currentMemoryTSR.code);
+        }
+        
+        // Show result
+        const resultText = document.getElementById('memoryResultText');
+        resultText.textContent = isCorrect ? 'Правильно! 🎉' : `Неправильно. Правильный ответ: ${this.currentMemoryTSR.code}`;
+        resultText.className = `result-text ${isCorrect ? 'correct' : 'incorrect'}`;
+        
+        document.getElementById('memoryResult').style.display = 'block';
+        this.updateMemoryStats();
+    }
+    
+    updateMemoryStats() {
+        document.getElementById('memoryCorrect').textContent = this.memoryStats.correct;
+        document.getElementById('memoryTotal').textContent = this.memoryStats.total;
+    }
+    
+    // Tab switching
+    switchTab(tabName) {
+        // Hide all tabs
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Show selected tab
+        document.getElementById(`${tabName}Content`).classList.add('active');
+        document.getElementById(`${tabName}Tab`).classList.add('active');
+        
+        // Initialize tab content
+        if (tabName === 'quiz' && !this.currentQuizQuestion) {
+            this.startQuiz();
+        } else if (tabName === 'memory' && !this.currentMemoryTSR) {
+            this.startMemoryGame();
+        }
     }
 }
 
