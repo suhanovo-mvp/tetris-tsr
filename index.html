@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Тетрис ТСР - Технические средства реабилитации</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -21,6 +21,30 @@
                     <h2>Игра окончена!</h2>
                     <p>Счет: <span id="finalScore">0</span></p>
                     <button id="restartBtn">Новая игра</button>
+                </div>
+                
+                <!-- Touch Controls -->
+                <div class="touch-controls" id="touchControls">
+                    <div class="control-row">
+                        <button class="control-btn rotate-btn" id="rotateBtn">
+                            <span class="btn-icon">↻</span>
+                            <span class="btn-label">Поворот</span>
+                        </button>
+                        <button class="control-btn drop-btn" id="dropBtn">
+                            <span class="btn-icon">⬇</span>
+                            <span class="btn-label">Падение</span>
+                        </button>
+                    </div>
+                    <div class="control-row">
+                        <button class="control-btn left-btn" id="leftBtn">
+                            <span class="btn-icon">←</span>
+                            <span class="btn-label">Влево</span>
+                        </button>
+                        <button class="control-btn right-btn" id="rightBtn">
+                            <span class="btn-icon">→</span>
+                            <span class="btn-label">Вправо</span>
+                        </button>
+                    </div>
                 </div>
             </div>
             
@@ -46,21 +70,47 @@
                 
                 <div class="controls">
                     <h3>Управление</h3>
-                    <div class="control-item">
-                        <span class="key">← →</span>
-                        <span>Движение</span>
+                    <div class="control-section">
+                        <h4>Клавиатура</h4>
+                        <div class="control-item">
+                            <span class="key">← →</span>
+                            <span>Движение</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="key">↓</span>
+                            <span>Ускорение</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="key">↑</span>
+                            <span>Поворот</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="key">Пробел</span>
+                            <span>Быстрое падение</span>
+                        </div>
                     </div>
-                    <div class="control-item">
-                        <span class="key">↓</span>
-                        <span>Ускорение</span>
-                    </div>
-                    <div class="control-item">
-                        <span class="key">↑</span>
-                        <span>Поворот</span>
-                    </div>
-                    <div class="control-item">
-                        <span class="key">Пробел</span>
-                        <span>Быстрое падение</span>
+                    <div class="control-section mobile-only">
+                        <h4>Сенсорное управление</h4>
+                        <div class="control-item">
+                            <span class="gesture">👆</span>
+                            <span>Касание - поворот</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="gesture">👈👉</span>
+                            <span>Свайп влево/вправо - движение</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="gesture">👆</span>
+                            <span>Свайп вверх - поворот</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="gesture">👇</span>
+                            <span>Свайп вниз - быстрое падение</span>
+                        </div>
+                        <div class="control-item">
+                            <span class="gesture">🔘</span>
+                            <span>Виртуальные кнопки</span>
+                        </div>
                     </div>
                 </div>
             </div>

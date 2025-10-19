@@ -26,6 +26,17 @@ class TetrisGame {
         this.clearAnimationTime = 0;
         this.pieceAnimation = { scale: 1, rotation: 0 };
         
+        // Touch gesture properties
+        this.touchStartX = 0;
+        this.touchStartY = 0;
+        this.touchStartTime = 0;
+        this.lastTouchX = 0;
+        this.lastTouchY = 0;
+        this.isTouchDevice = 'ontouchstart' in window;
+        this.gestureThreshold = 30; // Minimum distance for swipe
+        this.tapThreshold = 200; // Maximum time for tap
+        this.swipeThreshold = 50; // Minimum distance for swipe
+        
         this.init();
     }
     
@@ -37,6 +48,32 @@ class TetrisGame {
         this.gameRunning = true;
         this.gameLoop();
         this.createTSRCatalog();
+        this.setupMobileOptimizations();
+    }
+    
+    setupMobileOptimizations() {
+        // Prevent zoom on double tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (e) => {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+        
+        // Add viewport meta tag if not present
+        if (!document.querySelector('meta[name="viewport"]')) {
+            const viewport = document.createElement('meta');
+            viewport.name = 'viewport';
+            viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+            document.head.appendChild(viewport);
+        }
+        
+        // Show touch controls on mobile
+        if (this.isTouchDevice) {
+            document.getElementById('touchControls').style.display = 'block';
+        }
     }
     
     initBoard() {
@@ -50,6 +87,7 @@ class TetrisGame {
     }
     
     setupEventListeners() {
+        // Keyboard controls
         document.addEventListener('keydown', (e) => {
             if (!this.gameRunning || this.gameOver) return;
             
@@ -73,9 +111,121 @@ class TetrisGame {
             }
         });
         
+        // Touch controls
+        this.setupTouchControls();
+        
+        // Button controls
         document.getElementById('restartBtn').addEventListener('click', () => {
             this.restart();
         });
+    }
+    
+    setupTouchControls() {
+        const canvas = this.canvas;
+        
+        // Touch events for gestures
+        canvas.addEventListener('touchstart', (e) => {
+            if (!this.gameRunning || this.gameOver) return;
+            e.preventDefault();
+            
+            const touch = e.touches[0];
+            this.touchStartX = touch.clientX;
+            this.touchStartY = touch.clientY;
+            this.touchStartTime = Date.now();
+            this.lastTouchX = touch.clientX;
+            this.lastTouchY = touch.clientY;
+        }, { passive: false });
+        
+        canvas.addEventListener('touchmove', (e) => {
+            if (!this.gameRunning || this.gameOver) return;
+            e.preventDefault();
+            
+            const touch = e.touches[0];
+            this.lastTouchX = touch.clientX;
+            this.lastTouchY = touch.clientY;
+        }, { passive: false });
+        
+        canvas.addEventListener('touchend', (e) => {
+            if (!this.gameRunning || this.gameOver) return;
+            e.preventDefault();
+            
+            this.handleTouchEnd();
+        }, { passive: false });
+        
+        // Virtual button controls
+        document.getElementById('leftBtn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.movePiece(-1, 0);
+            this.vibrate(50);
+        });
+        
+        document.getElementById('rightBtn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.movePiece(1, 0);
+            this.vibrate(50);
+        });
+        
+        document.getElementById('rotateBtn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.rotatePiece();
+            this.vibrate(100);
+        });
+        
+        document.getElementById('dropBtn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.hardDrop();
+            this.vibrate(150);
+        });
+        
+        // Prevent context menu on long press
+        canvas.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+        });
+    }
+    
+    handleTouchEnd() {
+        const deltaX = this.lastTouchX - this.touchStartX;
+        const deltaY = this.lastTouchY - this.touchStartY;
+        const deltaTime = Date.now() - this.touchStartTime;
+        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        
+        // Determine gesture type
+        if (distance < this.gestureThreshold && deltaTime < this.tapThreshold) {
+            // Tap - rotate piece
+            this.rotatePiece();
+            this.vibrate(100);
+        } else if (distance > this.swipeThreshold) {
+            // Swipe gesture
+            const absX = Math.abs(deltaX);
+            const absY = Math.abs(deltaY);
+            
+            if (absX > absY) {
+                // Horizontal swipe
+                if (deltaX > 0) {
+                    this.movePiece(1, 0); // Swipe right
+                } else {
+                    this.movePiece(-1, 0); // Swipe left
+                }
+                this.vibrate(50);
+            } else {
+                // Vertical swipe
+                if (deltaY > 0) {
+                    // Swipe down - quick drop
+                    this.hardDrop();
+                    this.vibrate(150);
+                } else {
+                    // Swipe up - rotate
+                    this.rotatePiece();
+                    this.vibrate(100);
+                }
+            }
+        }
+    }
+    
+    vibrate(duration = 50) {
+        if (navigator.vibrate) {
+            navigator.vibrate(duration);
+        }
     }
     
     generateNextPiece() {
